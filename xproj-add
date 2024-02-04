@@ -1,0 +1,51 @@
+#!/bin/bash
+
+export HOME="/root"
+
+git config --global user.email "rantempest2@gmail.com"
+git config --global user.name "TEMPEST"
+
+TOKEN="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"
+REPO="https://github.com/RanTempest/autoscript.git"
+EMAIL="rantempest2@gmail.com"
+USER="TEMPEST"
+
+today=$(date -d "0 days" +"%d-%b-%Y")
+
+git clone ${REPO} /root/ipvps/ &> /dev/null
+read -p "  Input IP Address : " ip
+CLIENT_EXISTS=$(grep -w $ip /root/ipvps/ip | wc -l)
+if [[ ${CLIENT_EXISTS} == '1' ]]; then
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e "🦂PELANGGAN TELAH TERSEDIA🦂"
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e ""
+    echo -e "    UNTUK MELANJUTKAN "
+    echo -e " SILAHKAN PERPANJANG IP VPS"
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo -e "      Hubungi Admin :"
+    echo -e "    Telegram : RanTempest "
+    echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    exit
+fi
+read -p "  Input Username IP (Contoh : reyz) : " name
+read -p "  Input Masa Aktif : " masaaktif
+exp=$(date -d "$masaaktif days" +"%d-%b-%Y")
+echo "### ${name} ${exp} ${ip}" >> /root/ipvps/ip
+cd /root/ipvps
+rm -rf .git &> /dev/null
+git init &> /dev/null
+git add . &> /dev/null
+git commit -m m &> /dev/null
+git branch -M main &> /dev/null
+git remote add origin https://github.com/RanTempest/autoscript.git
+git push -f https://${TOKEN}@github.com/RanTempest/autoscript.git &> /dev/null
+rm -rf /root/ipvps
+
+echo -e "➣ ᴜꜱᴇʀ : $name"
+echo -e "➣ ᴇxᴘ  : $exp Days"
+echo -e "➣ ɪᴘ   : $ip"
+echo -e "━━━━━━━━━━━━━━━━━"
+echo -e "      ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ :"
+echo -e "   ᴛᴇʟᴇɢʀᴀᴍ : RanTempest"
+echo -e "━━━━━━━━━━━━━━━━━"

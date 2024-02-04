@@ -1,0 +1,49 @@
+#!/bin/bash
+
+export HOME="/root"
+
+git config --global user.email "rantempest2@gmail.com"
+git config --global user.name "TEMPEST"
+
+TOKEN="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"
+REPO="https://github.com/RanTempest/autoscript.git"
+EMAIL="rantempest2@gmail.com"
+USER="TEMPEST"
+
+git clone ${REPO} /root/ipvps/ &> /dev/null
+NUMBER_OF_CLIENTS=$(grep -c -E "^### " "/root/ipvps/ip")
+until [[ ${CLIENT_NUMBER} -ge 1 && ${CLIENT_NUMBER} -le ${NUMBER_OF_CLIENTS} ]]; do
+    if [[ ${CLIENT_NUMBER} == '1' ]]; then
+        read -rp "   Select one client [1]: " CLIENT_NUMBER
+    else
+        read -rp "   Select one client [1-${NUMBER_OF_CLIENTS}]: " CLIENT_NUMBER
+    fi
+done
+     read -p "  Input Days  : " masaaktif
+user=$(grep -E "^### " "/root/ipvps/ip" | cut -d ' ' -f 2 | sed -n "${CLIENT_NUMBER}"p)
+exp=$(grep -E "^### " "/root/ipvps/ip" | cut -d ' ' -f 3 | sed -n "${CLIENT_NUMBER}"p)
+ip=$(grep -E "^### " "/root/ipvps/ip" | cut -d ' ' -f 4 | sed -n "${CLIENT_NUMBER}"p)
+now=$(date +%d-%b-%Y)
+d1=$(date -d "$exp" +%s)
+d2=$(date -d "$now" +%s)
+exp2=$(( (d1 - d2) / 86400 ))
+exp3=$(($exp2 + $masaaktif))
+exp4=`date -d "$exp3 days" +"%d-%b-%Y"`
+sed -i "s/### $user $exp/### $user $exp4/g" /root/ipvps/ip
+cd /root/ipvps
+rm -rf .git &> /dev/null
+git init &> /dev/null
+git add . &> /dev/null
+git commit -m m &> /dev/null
+git branch -M main &> /dev/null
+git remote add origin https://github.com/RanTempest/autoscript.git
+git push -f https://${TOKEN}@github.com/RanTempest/autoscript.git &> /dev/null
+rm -rf /root/ipvps
+
+echo -e "➣ ᴜꜱᴇʀ : $user"
+echo -e "➣ ᴇxᴘ  : $exp4 Days"
+echo -e "➣ ɪᴘ   : $ip"
+echo -e "━━━━━━━━━━━━━━━━━"
+echo -e "      ᴄᴏɴᴛᴀᴄᴛ ᴀᴅᴍɪɴ :"
+echo -e "   ᴛᴇʟᴇɢʀᴀᴍ : RanTempest"
+echo -e "━━━━━━━━━━━━━━━━━"

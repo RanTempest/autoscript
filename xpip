@@ -1,0 +1,48 @@
+#!/bin/bash
+
+export HOME="/root"
+
+git config --global user.email "rantempest2@gmail.com"
+git config --global user.name "TEMPEST"
+
+TOKEN="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"
+REPO="https://github.com/RanTempest/autoscript.git"
+EMAIL="RanTempest2@gmail.com"
+USER="TempestBot"
+TIMES="10"
+CHATID="-6953253803"
+KEY="6311738419:AAFYqB7pbUYA62pKQFA_fyQjEOqzQWoP93U"
+URL="https://api.telegram.org/bot$KEY/sendMessage"
+
+git clone ${REPO} /root/ipvps/ &> /dev/null
+
+data=($(grep -E "^### " "/root/ipvps/ip" | cut -d ' ' -f 2 | sort -u))
+now=$(TZ='Asia/Jakarta' date +"%d-%b-%Y")
+for user in "${data[@]}"; do
+    exp=$(grep -E "^### $user " "/root/ipvps/ip" | cut -d ' ' -f 3)
+    d1=$(date -d "$exp" +%s)
+    d2=$(date -d "$now" +%s)
+    exp2=$(((d1 - d2) / 86400))
+    if [[ "$exp2" -le "0" ]]; then
+        sed -i "/^### $user $exp/d" /root/ipvps/ip
+ TEXT="
+ <code>——————————————————————————</code>
+ <code>     DELETE USER SCRIPT </code>
+ <code>——————————————————————————</code>
+ <code>Username : ${user}</code>
+ <code>expired  : ${exp}</code>
+ <code>——————————————————————————</code>
+ "
+ curl -s --max-time $TIMES -d "chat_id=$CHATID&disable_web_page_preview=1&text=$TEXT&parse_mode=html" $URL >/dev/null
+    fi
+done
+
+cd /root/ipvps
+rm -rf .git &> /dev/null
+git init &> /dev/null
+git add . &> /dev/null
+git commit -m "Hapus pengguna yang sudah kedaluwarsa" &> /dev/null
+git branch -M main &> /dev/null
+git remote add origin https://github.com/Rantempest/autoscript.git
+git push -f https://${TOKEN}@github.com/Rantempest/autoscript.git &> /dev/null
+rm -rf /root/ipvps
